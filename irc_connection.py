@@ -11,15 +11,6 @@ class IrcConnection(object):
 
     self.connect()
 
-    found = False
-    while not found:
-      data = self.connection.recv(4096).decode('ascii').splitlines()
-      print(data)
-      for datum in data:
-        if datum.split()[0] == "PING":
-          self.sendMessage("PONG " + ' '.join(datum.split()[1:]))
-          found = True
-
     for channel in channels:
       self.joinChannel(channel);
 
@@ -39,8 +30,18 @@ class IrcConnection(object):
     if self.password:
       self.sendMessage("PASS " + self.password)
 
+    # UnrealIRCD doesn't let you do anything until you respond to a PING.
+    # Waiting for a PING may be a reasonable thing to do anyway.
+    found = False
+    while not found:
+      data = self.readFromConnection()
+      for datum in data:
+        if datum.split()[0] == "PING":                            # PING sometext
+          self.sendMessage("PONG " + ' '.join(datum.split()[1:])) # PONG sometext
+          found = True
+
+
   def sendMessage(self, message):
-    print(message)
     self.connection.send((message + "\r\n").encode('ascii'))
 
   def joinChannel(self, channel):
@@ -48,23 +49,24 @@ class IrcConnection(object):
 
   def getNextMessages(self):
     received = None
-    while not received:
+    while not received:               # Haven't met a PRIVMSG yet
       for message in self.readFromConnection():
         components = message.split()
-        if components[0] == "PING":
+        if components[0] == "PING":   # Need to respond to PINGS
           self.sendMessage("PONG " + ' '.join(components[1:]))
+
         elif components[1] == "PRIVMSG":
-          received = (components[0].split("!")[0].lstrip(':'), 
-                      components[2], 
-                      ' '.join(components[3:]).lstrip(':'))
+          received = (components[0].split("!")[0].lstrip(':'),  # nick
+                      components[2],                            # target
+                      ' '.join(components[3:]).lstrip(':'))     # message
 
     return received;
 
 
 
+if __name__ == "__main__":
+  con = IrcConnection("earth.benwr.net", channels=["#test"])
 
-con = IrcConnection("earth.benwr.net", channels=["#test"])
-
-while True:
-  response = con.getNextMessages()
-  print(response)
+  while True:
+    response = con.getNextMessages()
+    print(response)
