@@ -12,6 +12,9 @@ callbacks = { "hello": irc_callbacks.sayHi
             , ".random": irc_callbacks.randomNumber
             , ".help": irc_callbacks.help
             , ".man": irc_callbacks.man
+            , ".py2doc": irc_callbacks.py2doc
+            , ".pydoc": irc_callbacks.py3doc
+            , ".py3doc": irc_callbacks.py3doc
             }
 
 def think(sender, message):
