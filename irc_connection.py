@@ -11,7 +11,9 @@ class IrcConnection(object):
 
     self.connect()
 
+    self.channels = []
     for channel in channels:
+      self.channels.append(channel)
       self.joinChannel(channel);
 
   def readFromConnection(self):
@@ -43,11 +45,19 @@ class IrcConnection(object):
 
   def sendMessage(self, message):
     self.connection.send((message + "\r\n").encode('ascii'))
+    
 
   def joinChannel(self, channel):
     self.sendMessage("JOIN " + channel)
+    self.channels.append(channel)
 
-  def getNextMessages(self):
+  def partChannel(self, channel):
+    if channel in self.channels:
+      self.sendMessage("PART " + channel)
+    else:
+      raise NameError("Can't part from channel I'm not in.")
+
+  def getNextChat(self):
     received = None
     while not received:               # Haven't met a PRIVMSG yet
       for message in self.readFromConnection():
@@ -62,11 +72,14 @@ class IrcConnection(object):
 
     return received;
 
+  def sendChat(self, target, message):
+    self.sendMessage("PRIVMSG " + target + " " + message)
+
 
 
 if __name__ == "__main__":
   con = IrcConnection("earth.benwr.net", channels=["#test"])
 
   while True:
-    response = con.getNextMessages()
+    response = con.getNextChat()
     print(response)
