@@ -64,4 +64,10 @@ def randomNumber(sender, rest):
     return "{}: {}".format(sender, random.randint(lowlimit, uplimit))
 
 def man(sender, title):
-  return "{}: http://man.he.net/?topic={}&section=all".format(sender, title)
+    return "{}: http://man.he.net/?topic={}&section=all".format(sender, title)
+
+def py2doc(sender, module):
+    return "{}: http://docs.python.org/2/library/{}.html".format(sender, module)
+
+def py3doc(sender, module):
+    return "{}: http://docs.python.org/3/library/{}.html".format(sender, module)
