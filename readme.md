@@ -27,8 +27,10 @@ because of the nature of distributed chat programs.
 Marvin also demonstrates the use of common Unix interfaces: sockets and
 textual files.
 
-To activate him, run `python3 irc_connection.py`
+To activate him, run `python irc_connection.py`
 
+## Dependencies ##
+* python (2.x or 3.x)
 
 ## Connection ##
 
@@ -69,3 +71,6 @@ that sent it the message.
 
 When Marvin needs to remember something, he uses the `irc_database.py` module,
 which stores data in a simple file, containing json text.
+
+## Additional Documentation ##
+* RFC2812 - http://tools.ietf.org/html/rfc2812#section-3.2.2
