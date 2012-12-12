@@ -27,20 +27,23 @@ class IrcConnection(object):
 
   def connect(self):
     self.connection = socket.create_connection((self.host, self.port))
-    self.sendMessage("NICK " + self.nick)
-    self.sendMessage("USER " + self.nick + " " + self.host + " " + self.servname + " :" + self.fullname)
+
     if self.password:
       self.sendMessage("PASS " + self.password)
 
+    self.sendMessage("NICK " + self.nick)
+
+    self.sendMessage("USER " + self.nick + " " + self.host + " " + self.servname + " :" + self.fullname)
+
     # UnrealIRCD doesn't let you do anything until you respond to a PING.
     # Waiting for a PING may be a reasonable thing to do anyway.
-    found = False
-    while not found:
-      data = self.readFromConnection()
-      for datum in data:
-        if datum.split()[0] == "PING":                            # PING sometext
-          self.sendMessage("PONG " + ' '.join(datum.split()[1:])) # PONG sometext
-          found = True
+    #found = False
+    #while not found:
+    #  data = self.readFromConnection()
+    #  for datum in data:
+    #    if datum.split()[0] == "PING":                            # PING sometext
+    #      self.sendMessage("PONG " + ' '.join(datum.split()[1:])) # PONG sometext
+    #      found = True
 
 
   def sendMessage(self, message):
@@ -73,13 +76,16 @@ class IrcConnection(object):
     return received;
 
   def sendChat(self, target, message):
-    self.sendMessage("PRIVMSG " + target + " " + message)
+    self.sendMessage("PRIVMSG " + target + " :" + message)
 
 
 
 if __name__ == "__main__":
-  con = IrcConnection("earth.benwr.net", channels=["#test"])
+  con = IrcConnection("irc.oftc.net", channels=["#vtluug"], nick="mireshabwrose")
+  con.joinChannel("#vtluug")
 
   while True:
     response = con.getNextChat()
     print(response)
+    if response[2] == con.nick + ": hello":
+      con.sendChat(response[1], "howdy, " + response[0] + "!")
