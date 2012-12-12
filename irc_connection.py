@@ -1,4 +1,5 @@
 import socket
+import brain
 
 class IrcConnection(object):
   debug = 1
@@ -31,10 +32,13 @@ class IrcConnection(object):
 
   def connect(self):
     self.connection = socket.create_connection((self.host, self.port))
-    self.sendMessage("NICK " + self.nick)
-    self.sendMessage("USER " + self.nick + " " + self.host + " " + self.servname + " :" + self.fullname)
+
     if self.password:
       self.sendMessage("PASS " + self.password)
+
+    self.sendMessage("NICK " + self.nick)
+
+    self.sendMessage("USER " + self.nick + " " + self.host + " " + self.servname + " :" + self.fullname)
 
     # UnrealIRCD doesn't let you do anything until you respond to a PING.
     # Waiting for a PING may be a reasonable thing to do anyway.
@@ -47,6 +51,7 @@ class IrcConnection(object):
   # Quits IRC and disconnects the socket.
   def disconnect(self, message=''): 
     self.sendMessage("QUIT :" + message)
+    self.connection.shutdown(socket.SHUT_RDWR)
     self.connection.close()
 
   def sendMessage(self, message):
@@ -76,18 +81,29 @@ class IrcConnection(object):
         elif components[1] == "PRIVMSG":
           received = (components[0].split("!")[0].lstrip(':'),  # nick
                       components[2],                            # target
-                      ' '.join(components[3:]).lstrip(':'))     # message
+                      message)                                 # message
 
     return received;
 
   def sendChat(self, target, message):
     self.sendMessage("PRIVMSG " + target + " :" + message)
 
+  def quit(self):
+    self.sendMessage("QUIT")
+    self.connection.shutdown(socket.SHUT_RDWR)
+    self.connection.close()
+
 
 
 if __name__ == "__main__":
-  con = IrcConnection("irc.freenode.net", channels=['#ece2524'])
   #TODO move data to config file
+  con = IrcConnection("irc.oftc.net", channels=["#dyreshark"])
+  
   while True:
     response = con.getNextChat()
     print(response)
+    # Sender, message
+    res = brain.think(response[0], response[2])
+    
+    if res:
+      con.sendChat(response[1], res)

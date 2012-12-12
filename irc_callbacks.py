@@ -4,7 +4,7 @@ import re
 def help(sender, topic):
     # If this gets sooper-big, we can just have it automatically
     # put together help based on docstrings
-    helptopics = {"random": ".random [max|min-max]\n" +
+    helptopics = {"random": ".random [max|min-max]: " +
                             "Generates a random number from 0 to 1000." + 
                             " Minimum and maximum are specifiable." + 
                             " No negatives plz"} 
@@ -16,10 +16,8 @@ def help(sender, topic):
     topic = topic.lower()
 
     if not topic:
-        hts = ("{}: {}".format(k,v) for k, v in helptopics.items())
-        # Start with \n to prep for name
-        res = "\n"
-        res += '\n\n'.join(hts)
+        res = "I'm a bot! And I can do the following (type .help <topic> for info): "
+        res += ', '.join(helptopics.keys())
     elif topic in helptopics:
         res = helptopics[topic]
     else:
@@ -49,7 +47,7 @@ def randomNumber(sender, rest):
         
         # if both lower and upper limit were specified
         if rest.find('-') != -1:
-            low, rest = rest.split('-')[0:1]
+            low, rest = rest.split('-', 1)
             lowlimit = _tryParse(low, lowlimit)
 
         uplimit = _tryParse(rest, uplimit)
@@ -65,3 +63,5 @@ def randomNumber(sender, rest):
 
     return "{}: {}".format(sender, random.randint(lowlimit, uplimit))
 
+def man(sender, title):
+  return "{}: http://man.he.net/?topic={}&section=all".format(sender, title)
