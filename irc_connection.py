@@ -3,11 +3,18 @@ import brain
 
 class IrcConnection(object):
 
-  #TODO move to config file
 
-  def __init__(self, host, port=6667, channels=[''], nick="marvin", password=None, fullname="Marvin", servname="unknown"):
-    debug = 1
+  def __init__(self, 
+               host, 
+               port=6667, 
+               channels=[''], 
+               nick="marvin", 
+               password=None, 
+               fullname="Marvin", 
+               servname="unknown",
+               debug=False):
 
+    self.debug = debug
     self.host = host
     self.port = port
     self.nick = nick
@@ -77,7 +84,7 @@ class IrcConnection(object):
         if components[0] == "PING":   # Need to respond to PINGS
           pongString = "PONG" + ' '.join(components[1:])
           self.sendMessage(pongString)
-          if debug:
+          if self.debug:
             print(pongString)
         elif len(components) > 1 and components[1] == "PRIVMSG":
 
@@ -103,7 +110,7 @@ class IrcConnection(object):
 
 if __name__ == "__main__":
   #TODO move data to config file
-  con = IrcConnection("irc.oftc.net", channels=["#dyreshark"])
+  con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], debug=True)
   
   while True:
     response = con.getNextChat()
