@@ -8,10 +8,11 @@ This is brain.py. It recieves messages and calls appropriate functions (if one e
 in order to respond to these messages. Below is a callbacks Dict, where all of the callbacks
 are linked to their triggers. 
 """
-callbacks = { "hello": irc_callbacks.sayHi,
-              ".random": irc_callbacks.randomNumber,
-              ".help": irc_callbacks.help,
-              ".man": irc_callbacks.man}
+callbacks = { "hello": irc_callbacks.sayHi
+            , ".random": irc_callbacks.randomNumber
+            , ".help": irc_callbacks.help
+            , ".man": irc_callbacks.man
+            }
 
 def think(sender, message):
     global callbacks
