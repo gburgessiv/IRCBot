@@ -4,10 +4,17 @@ import re
 def help(sender, topic):
     # If this gets sooper-big, we can just have it automatically
     # put together help based on docstrings
-    helptopics = {"random": ".random [max|min-max]: " +
-                            "Generates a random number from 0 to 1000." + 
-                            " Minimum and maximum are specifiable." + 
-                            " No negatives plz"} 
+    helptopics = { "random": ".random [max|min-max]: " +
+                             "Generates a random number from 0 to 1000." + 
+                             " Minimum and maximum are specifiable." + 
+                             " No negatives plz"
+                 , "man": ".man man_page: " +
+                          "Gets a link to the requested manpage."
+                 , "py2doc": ".py2doc module: " +
+                             "Gets python2 documentation for the requested module"
+                 , "py3doc": ".py3doc module: " +
+                             "Gets python3 documentation for the requested module"
+                 , "pydoc": "Alias for py3doc" } 
 
     # If they started the topic with a ., ignore it.
     if topic.startswith('.'):
