@@ -101,11 +101,9 @@ class IrcConnection(object):
   def sendChat(self, target, message):
     self.sendMessage("PRIVMSG " + target + " :" + message)
 
-  def quit(self):
-    self.sendMessage("QUIT")
-    self.connection.shutdown(socket.SHUT_RDWR)
-    self.connection.close()
-
+  # DEPRECATED - use disconnect() instead, as it allows for a quit message
+  def quit(self):   
+    self.disconnect() 
 
 
 if __name__ == "__main__":
