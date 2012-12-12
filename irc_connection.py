@@ -70,14 +70,23 @@ class IrcConnection(object):
           self.sendMessage("PONG " + ' '.join(components[1:]))
 
         elif len(components) > 1 and components[1] == "PRIVMSG":
+          message = ' '.join(components[3:])
+          if message[0] == ':':
+            message = message[1:]
+
           received = (components[0].split("!")[0].lstrip(':'),  # nick
                       components[2],                            # target
-                      ' '.join(components[3:]).lstrip(':'))     # message
+                      message)                                 # message
 
     return received;
 
   def sendChat(self, target, message):
     self.sendMessage("PRIVMSG " + target + " :" + message)
+
+  def quit(self):
+    self.sendMessage("QUIT")
+    self.connection.shutdown(socket.SHUT_RDWR)
+    self.connection.close()
 
 
 
@@ -87,7 +96,6 @@ if __name__ == "__main__":
   while True:
     response = con.getNextChat()
     print(response)
-
     # Sender, message
     res = brain.think(response[0], response[2])
     
