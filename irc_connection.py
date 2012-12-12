@@ -1,4 +1,5 @@
 import socket
+import brain
 
 class IrcConnection(object):
   def __init__(self, host, port=6667, channels=[], nick="marvin", password=None, fullname="Marvin", servname="unknown"):
@@ -68,7 +69,7 @@ class IrcConnection(object):
         if components[0] == "PING":   # Need to respond to PINGS
           self.sendMessage("PONG " + ' '.join(components[1:]))
 
-        elif components[1] == "PRIVMSG":
+        elif len(components) > 1 and components[1] == "PRIVMSG":
           message = ' '.join(components[3:])
           if message[0] == ':':
             message = message[1:]
@@ -90,14 +91,13 @@ class IrcConnection(object):
 
 
 if __name__ == "__main__":
-  con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], nick="mireshabwrose")
+  con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], nick="dydydy")
 
   while True:
     response = con.getNextChat()
     print(response)
-    if response[2] == con.nick + ": hello":
-      con.sendChat(response[1], "howdy, " + response[0] + "!")
-    elif response[2] == ".rejoin":
-      con.quit()
-      con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], nick="mireshabwrose")
-
+    # Sender, message
+    res = brain.think(response[0], response[2])
+    
+    if res:
+      con.sendChat(response[1], res)
