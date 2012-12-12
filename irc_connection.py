@@ -83,7 +83,6 @@ class IrcConnection(object):
 
 if __name__ == "__main__":
   con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], nick="dydydy")
-  con.joinChannel("#vtluug")
 
   while True:
     response = con.getNextChat()
