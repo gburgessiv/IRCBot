@@ -78,7 +78,7 @@ class IrcConnection(object):
           self.sendMessage(pongString)
           if debug:
             print(pongString)
-        elif components[1] == "PRIVMSG":
+        elif len(components) > 1 and components[1] == "PRIVMSG":
           received = (components[0].split("!")[0].lstrip(':'),  # nick
                       components[2],                            # target
                       message)                                 # message
