@@ -1,7 +1,11 @@
 import socket
 
 class IrcConnection(object):
-  def __init__(self, host, port=6667, channels=[], nick="marvin", password=None, fullname="Marvin", servname="unknown"):
+  debug = 1
+
+  #TODO move to config file
+
+  def __init__(self, host, port=6667, channels=[''], nick="marvin", password=None, fullname="Marvin", servname="unknown"):
     self.host = host
     self.port = port
     self.nick = nick
@@ -34,14 +38,16 @@ class IrcConnection(object):
 
     # UnrealIRCD doesn't let you do anything until you respond to a PING.
     # Waiting for a PING may be a reasonable thing to do anyway.
-    found = False
-    while not found:
-      data = self.readFromConnection()
-      for datum in data:
-        if datum.split()[0] == "PING":                            # PING sometext
-          self.sendMessage("PONG " + ' '.join(datum.split()[1:])) # PONG sometext
-          found = True
+    data = self.readFromConnection()
+    for datum in data:
+      if datum.split()[0] == "PING":                            # PING sometext
+        self.sendMessage("PONG " + ' '.join(datum.split()[1:])) # PONG sometext
 
+
+  # Quits IRC and disconnects the socket.
+  def disconnect(self, message=''): 
+    self.sendMessage("QUIT :" + message)
+    self.connection.close()
 
   def sendMessage(self, message):
     self.connection.send((message + "\r\n").encode('ascii'))
@@ -51,9 +57,9 @@ class IrcConnection(object):
     self.sendMessage("JOIN " + channel)
     self.channels.append(channel)
 
-  def partChannel(self, channel):
+  def partChannel(self, channel, message=''):
     if channel in self.channels:
-      self.sendMessage("PART " + channel)
+      self.sendMessage("PART " + channel + " :" + message)
     else:
       raise NameError("Can't part from channel I'm not in.")
 
@@ -63,8 +69,10 @@ class IrcConnection(object):
       for message in self.readFromConnection():
         components = message.split()
         if components[0] == "PING":   # Need to respond to PINGS
-          self.sendMessage("PONG " + ' '.join(components[1:]))
-
+          pongString = "PONG" + ' '.join(components[1:])
+          self.sendMessage(pongString)
+          if debug:
+            print(pongString)
         elif components[1] == "PRIVMSG":
           received = (components[0].split("!")[0].lstrip(':'),  # nick
                       components[2],                            # target
@@ -73,13 +81,13 @@ class IrcConnection(object):
     return received;
 
   def sendChat(self, target, message):
-    self.sendMessage("PRIVMSG " + target + " " + message)
+    self.sendMessage("PRIVMSG " + target + " :" + message)
 
 
 
 if __name__ == "__main__":
-  con = IrcConnection("earth.benwr.net", channels=["#test"])
-
+  con = IrcConnection("irc.freenode.net", channels=['#ece2524'])
+  #TODO move data to config file
   while True:
     response = con.getNextChat()
     print(response)
