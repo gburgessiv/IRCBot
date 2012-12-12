@@ -63,5 +63,13 @@ def randomNumber(sender, rest):
 
     return "{}: {}".format(sender, random.randint(lowlimit, uplimit))
 
-def man(sender, title):
-  return "{}: http://man.he.net/?topic={}&section=all".format(sender, title)
+def man(sender, msg):
+  args = msg.split()
+  fmt = "{}: http://www.freebsd.org/cgi/man.cgi?sektion={}&query={}&apropos={}"
+  if len(args) > 1:
+    if args[0] == "-k":
+      return fmt.format(sender, 0, args[1], 1)
+    else:
+      return fmt.format(sender, args[0], args[1], 0)
+  else:
+    return fmt.format(sender, 0, args[0], 0)
