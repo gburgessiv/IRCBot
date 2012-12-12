@@ -91,7 +91,7 @@ class IrcConnection(object):
 
 
 if __name__ == "__main__":
-  con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], nick="dydydy")
+  con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], nick="bwrbwrbwr")
 
   while True:
     response = con.getNextChat()

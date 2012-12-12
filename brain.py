@@ -10,7 +10,8 @@ are linked to their triggers.
 """
 callbacks = { "hello": irc_callbacks.sayHi,
               ".random": irc_callbacks.randomNumber,
-              ".help": irc_callbacks.help }
+              ".help": irc_callbacks.help,
+              ".man": irc_callbacks.man}
 
 def think(sender, message):
     global callbacks

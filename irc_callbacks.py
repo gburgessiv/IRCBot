@@ -63,3 +63,5 @@ def randomNumber(sender, rest):
 
     return "{}: {}".format(sender, random.randint(lowlimit, uplimit))
 
+def man(sender, title):
+  return "{}: http://man.he.net/?topic={}&section=all".format(sender, title)
