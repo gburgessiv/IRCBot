@@ -2,11 +2,12 @@ import socket
 import brain
 
 class IrcConnection(object):
-  debug = 1
 
   #TODO move to config file
 
   def __init__(self, host, port=6667, channels=[''], nick="marvin", password=None, fullname="Marvin", servname="unknown"):
+    debug = 1
+
     self.host = host
     self.port = port
     self.nick = nick
@@ -79,6 +80,11 @@ class IrcConnection(object):
           if debug:
             print(pongString)
         elif len(components) > 1 and components[1] == "PRIVMSG":
+
+          message = ' '.join(components[3:])
+          if message[0] == ":":
+            message = message[1:]
+
           received = (components[0].split("!")[0].lstrip(':'),  # nick
                       components[2],                            # target
                       message)                                 # message
