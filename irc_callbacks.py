@@ -8,8 +8,8 @@ def help(sender, topic):
                              "Generates a random number from 0 to 1000." + 
                              " Minimum and maximum are specifiable." + 
                              " No negatives plz"
-                 , "man": ".man man_page: " +
-                          "Gets a link to the requested manpage."
+                 , "man": ".man [-k | <section>] <title>: " +
+                          "Gets a link to the requested manpage from freebsd.org."
                  , "py2doc": ".py2doc module: " +
                              "Gets python2 documentation for the requested module"
                  , "py3doc": ".py3doc module: " +
