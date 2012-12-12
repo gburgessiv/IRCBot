@@ -69,23 +69,35 @@ class IrcConnection(object):
           self.sendMessage("PONG " + ' '.join(components[1:]))
 
         elif components[1] == "PRIVMSG":
+          message = ' '.join(components[3:])
+          if message[0] == ':':
+            message = message[1:]
+
           received = (components[0].split("!")[0].lstrip(':'),  # nick
                       components[2],                            # target
-                      ' '.join(components[3:]).lstrip(':'))     # message
+                      message)                                 # message
 
     return received;
 
   def sendChat(self, target, message):
     self.sendMessage("PRIVMSG " + target + " :" + message)
 
+  def quit(self):
+    self.sendMessage("QUIT")
+    self.connection.shutdown(socket.SHUT_RDWR)
+    self.connection.close()
+
 
 
 if __name__ == "__main__":
-  con = IrcConnection("irc.oftc.net", channels=["#vtluug"], nick="mireshabwrose")
-  con.joinChannel("#vtluug")
+  con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], nick="mireshabwrose")
 
   while True:
     response = con.getNextChat()
     print(response)
     if response[2] == con.nick + ": hello":
       con.sendChat(response[1], "howdy, " + response[0] + "!")
+    elif response[2] == ".rejoin":
+      con.quit()
+      con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], nick="mireshabwrose")
+
