@@ -1,10 +1,9 @@
 import socket
-import brain
 
 class IrcConnection(object):
 
 
-  def __init__(self, 
+  def __init__(self,
                host, 
                port=6667, 
                channels=[''], 
@@ -34,7 +33,7 @@ class IrcConnection(object):
       raise IOError("Cannot read messages unless connected to server")
     data = self.connection.recv(4096)
     if data:
-      return data.decode('ascii').splitlines()
+      return data.decode('utf_8').splitlines()
     else:
       return None
 
@@ -63,7 +62,7 @@ class IrcConnection(object):
     self.connection.close()
 
   def sendMessage(self, message):
-    self.connection.send((message + "\r\n").encode('ascii'))
+    self.connection.send((message + "\r\n").encode('utf_8'))
     
 
   def joinChannel(self, channel):
@@ -104,17 +103,3 @@ class IrcConnection(object):
   # DEPRECATED - use disconnect() instead, as it allows for a quit message
   def quit(self):   
     self.disconnect() 
-
-
-if __name__ == "__main__":
-  #TODO move data to config file
-  con = IrcConnection("irc.oftc.net", channels=["#dyreshark"], debug=True)
-  
-  while True:
-    response = con.getNextChat()
-    print(response)
-    # Sender, message
-    res = brain.think(response[0], response[2])
-    
-    if res:
-      con.sendChat(response[1], res)

@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+try:
+  import configparser
+except ImportError:
+  import ConfigParser as configparser
+import irc_connection
+import brain
+
+if __name__ == "__main__":
+
+  config = configparser.ConfigParser()
+
+  # Setting default values
+  config.add_section('identity')
+  config.set('identity', 'nick', 'marvin')
+  config.set('identity', 'fullname', 'Marvin the Paranoid Android')
+  config.set('identity', 'password', '')
+  config.set('identity', 'servname', 'unknown')
+  
+  config.add_section('server')
+  config.set('server', 'host', 'irc.oftc.net')
+  config.set('server', 'port', '6667')
+  config.set('server', 'channels', '')
+
+  config.add_section('behavior')
+  config.set('behavior', 'debug', '')
+
+
+  config.read("marvin.conf")
+
+  channels = config.get('server', 'channels').split()
+  debug = False if (config.get('behavior', 'debug') == "") else True
+  password = None if (config.get('identity', 'password') == "") else config['identity']['password']
+
+  connection = irc_connection.IrcConnection(config.get('server', 'host'), 
+                                             channels=channels, 
+                                             debug=debug,
+                                             port=int(config.get('server', 'port')),
+                                             nick=config.get('identity', 'nick'),
+                                             password=password,
+                                             fullname=config.get('identity', 'fullname'),
+                                             servname=config.get('identity', 'servname'))
+
+  while True:
+    response = connection.getNextChat()
+    print(response)
+
+    # Sender, message
+    res = brain.think(response[0], response[2])
+
+    if res:
+      connection.sendChat(response[1], res)

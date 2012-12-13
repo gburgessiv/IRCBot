@@ -27,7 +27,7 @@ because of the nature of distributed chat programs.
 Marvin also demonstrates the use of common Unix interfaces: sockets and
 textual files.
 
-To activate him, run `python irc_connection.py`
+To activate him, run `python marvin`
 
 ## Dependencies ##
 * python (2.x or 3.x)
@@ -55,7 +55,7 @@ in the `irc_callbacks.py` file. We have created some demonstrative callbacks:
 
 * .help returns helpful text for other callbacks
 * .sayHi says hi
-* randomNumber generates a random number
+* .random generates a random number
 * .man returns a link to a Unix man page on the web
 * .py2doc and py3doc return links to python documentation.
 
@@ -73,4 +73,5 @@ When Marvin needs to remember something, he uses the `irc_database.py` module,
 which stores data in a simple file, containing json text.
 
 ## Additional Documentation ##
+* RFC1459 - http://irchelp.org/irchelp/rfc/rfc.html
 * RFC2812 - http://tools.ietf.org/html/rfc2812#section-3.2.2
