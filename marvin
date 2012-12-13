@@ -12,7 +12,6 @@ import brain
 
 def runMarvin(connection):
   while True:
-    mydata = threading.local()
     response = connection.getNextChat()
     print((connection.host, response[0], response[1], response[2]))
 
