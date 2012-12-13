@@ -1,19 +1,43 @@
 # Marvin, the IRC bot #
+Marvin is a simple IRC bot, written in python.
 
-Marvin is a simple IRC bot, written in python. He demonstrates some aspects of
-the Unix design philosophy:
+To activate him, you'll probably want to configure him first. Otherwise, he won't
+be very useful.
+
+ If you're new to IRC, you should read 
+[this introduction](http://www.irchelp.org/irchelp/new2irc.html) before trying
+it out. I'd recommend installing XChat (or [Colloquy](http://colloquy.info) if
+you're on OS X). XChat can almost certainly be installed via your package
+manager ([or from here, if you're on Windows](http://www.silverex.org/download/)).
+
+If you're evaluating Marvin for the Virginia Tech Intro to Unix class, you'll
+probably want to join us in the #ece2524 channel of the OFTC IRC network. We have
+an instance of marvin running there. If you're planning to run your own version
+of marvin, please don't join this channel, as all the marvins will try to talk
+at once.
+
+To join us, simply tell your IRC client to connect to irc.oftc.net, and to join
+the #ece2524 channel.
+
+## Design Philosophy ##
+Marvin demonstrates some aspects of the Unix design philosophy:
 * He is split into several modular components:
   * A storage part (irc_database.py) 
   * An IRC connection class (irc_connection.py)
   * A brain, to which other parts ("callbacks") can be attached (brain.py)
-  * "Callbacks", which store modules of various functions that can be called by the brain 
+  * "Callbacks", which store modules of various functions that can be called by
+    the brain 
 * His code is fairly clear, divided into functions that "do one thing and do it
     well." 
 * His parts are separate, and don't care about each others' implementation
     details.
-* He is small, because library methods are used for most non-IRC tasks and there is no GUI
-* Ease of use is favored over efficiency, as the bottleneck is not hardware but rate-limiting on IRC networks.
-* He is transparent and fairly easy to debug, due to an optional debug flag in the IRCConnection constructor. The database is stored in plain text files to reduce overhead.
+* He is small, because library methods are used for most non-IRC tasks and there
+    is no GUI
+* Ease of use is favored over efficiency, as the bottleneck is not hardware but
+    rate-limiting on IRC networks.
+* He is transparent and fairly easy to debug, due to an optional debug flag in
+    the IRCConnection constructor. The database is stored in plain text files
+    to reduce overhead.
 * He is mostly silent. The bot does not send unnecessary information over IRC.
 * Exceptions that get raised by modules are presented in text form to the user.
     This makes marvin easy to repair when he isn't working as expected.
@@ -26,8 +50,6 @@ because of the nature of distributed chat programs.
 
 Marvin also demonstrates the use of common Unix interfaces: sockets and
 textual files.
-
-To activate him, run `python marvin`
 
 ## Dependencies ##
 * python (2.x or 3.x)
@@ -59,7 +81,9 @@ in the `irc_callbacks.py` file. We have created some demonstrative callbacks:
 * .man returns a link to a Unix man page on the web
 * .py2doc and py3doc return links to python documentation.
 
-Callbacks start with a dot to avoid collisions with other bots. (It's common practice for IRC bots to contain a unique character not used by other bots in the channel at the start of their trigger strings.)
+Callbacks start with a dot to avoid collisions with other bots. (It's common
+practice for IRC bots to contain a unique character not used by other bots in
+the channel at the start of their trigger strings.)
 
 ## Brain ##
 
