@@ -12,42 +12,44 @@ if __name__ == "__main__":
   config = configparser.ConfigParser()
 
   # Setting default values
-  config.add_section('identity')
-  config.set('identity', 'nick', 'marvin')
-  config.set('identity', 'fullname', 'Marvin the Paranoid Android')
-  config.set('identity', 'password', '')
-  config.set('identity', 'servname', 'unknown')
+
+  config.set('DEFAULT', 'nick', 'marvin')
+  config.set('DEFAULT', 'fullname', 'Marvin the Paranoid Android')
+  config.set('DEFAULT', 'password', '')
+  config.set('DEFAULT', 'servname', 'unknown')
   
-  config.add_section('server')
-  config.set('server', 'host', 'irc.oftc.net')
-  config.set('server', 'port', '6667')
-  config.set('server', 'channels', '')
+  config.set('DEFAULT', 'host', 'irc.oftc.net')
+  config.set('DEFAULT', 'port', '6667')
+  config.set('DEFAULT', 'channels', '')
 
-  config.add_section('behavior')
-  config.set('behavior', 'debug', '')
+  config.set('DEFAULT', 'debug', '')
 
+  config.read('marvin.conf')
 
-  config.read("marvin.conf")
+  connections = []
 
-  channels = config.get('server', 'channels').split()
-  debug = False if (config.get('behavior', 'debug') == "") else True
-  password = None if (config.get('identity', 'password') == "") else config['identity']['password']
+  for section in config.sections():
 
-  connection = irc_connection.IrcConnection(config.get('server', 'host'), 
-                                             channels=channels, 
-                                             debug=debug,
-                                             port=int(config.get('server', 'port')),
-                                             nick=config.get('identity', 'nick'),
-                                             password=password,
-                                             fullname=config.get('identity', 'fullname'),
-                                             servname=config.get('identity', 'servname'))
+    channels = config.get(section, 'channels').split()
+    debug = False if (config.get(section, 'debug') == "") else True
+    password = None if (config.get(section, 'password') == "") else config[section]['password']
+    connections.append(irc_connection.IrcConnection( 
+      section, 
+      channels=channels, 
+      debug=debug,
+      port=int(config.get(section, 'port')),
+      nick=config.get(section, 'nick'),
+      password=password,
+      fullname=config.get(section, 'fullname'),
+      servname=config.get(section, 'servname')))
 
   while True:
-    response = connection.getNextChat()
-    print(response)
+    for connection in connections:
+      response = connection.getNextChat()
+      print((connection.host, response[0], response[1], response[2]))
 
-    # Sender, message
-    res = brain.think(response[0], response[2])
+      # Sender, message
+      res = brain.think(response[0], response[2])
 
-    if res:
-      connection.sendChat(response[1], res)
+      if res:
+        connection.sendChat(response[1], res)
