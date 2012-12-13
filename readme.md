@@ -2,9 +2,11 @@
 Marvin is a simple IRC bot, written in python.
 
 To activate him, you'll probably want to configure him first. Otherwise, he won't
-be very useful.
+be very useful. To do this, rename the file "default.conf" to "marvin.conf",
+and edit it in your favorite text editor. You should probably at least give him
+a new nickname, and change the channels you want him to join.
 
- If you're new to IRC, you should read 
+If you're new to IRC, you should read 
 [this introduction](http://www.irchelp.org/irchelp/new2irc.html) before trying
 it out. I'd recommend installing XChat (or [Colloquy](http://colloquy.info) if
 you're on OS X). XChat can almost certainly be installed via your package
