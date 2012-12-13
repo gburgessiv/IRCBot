@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+try:
+  import configparser
+except ImportError:
+  import ConfigParser as configparser
+import threading
+
+import irc_connection
+import brain
+
+
 def runMarvin(connection):
   while True:
     mydata = threading.local()
@@ -12,15 +22,6 @@ def runMarvin(connection):
     if res:
       connection.sendChat(response[1], res)
 
-
-try:
-  import configparser
-except ImportError:
-  import ConfigParser as configparser
-import threading
-
-import irc_connection
-import brain
 
 if __name__ == "__main__":
 
@@ -41,7 +42,6 @@ if __name__ == "__main__":
 
   config.read('marvin.conf')
 
-  connections = []
 
   for section in config.sections():
 
