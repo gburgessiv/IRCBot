@@ -1,9 +1,24 @@
 #!/usr/bin/env python
 
+def runMarvin(connection):
+  while True:
+    mydata = threading.local()
+    response = connection.getNextChat()
+    print((connection.host, response[0], response[1], response[2]))
+
+      # Sender, message
+    res = brain.think(response[0], response[2])
+
+    if res:
+      connection.sendChat(response[1], res)
+
+
 try:
   import configparser
 except ImportError:
   import ConfigParser as configparser
+import threading
+
 import irc_connection
 import brain
 
@@ -33,7 +48,7 @@ if __name__ == "__main__":
     channels = config.get(section, 'channels').split()
     debug = False if (config.get(section, 'debug') == "") else True
     password = None if (config.get(section, 'password') == "") else config[section]['password']
-    connections.append(irc_connection.IrcConnection( 
+    connection = irc_connection.IrcConnection( 
       section, 
       channels=channels, 
       debug=debug,
@@ -41,15 +56,8 @@ if __name__ == "__main__":
       nick=config.get(section, 'nick'),
       password=password,
       fullname=config.get(section, 'fullname'),
-      servname=config.get(section, 'servname')))
+      servname=config.get(section, 'servname'))
+    
+    thread = threading.Thread(target=runMarvin, name=section, args=(connection,))
+    thread.start()
 
-  while True:
-    for connection in connections:
-      response = connection.getNextChat()
-      print((connection.host, response[0], response[1], response[2]))
-
-      # Sender, message
-      res = brain.think(response[0], response[2])
-
-      if res:
-        connection.sendChat(response[1], res)
