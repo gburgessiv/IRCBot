@@ -6,6 +6,8 @@ be very useful. To do this, rename the file "default.conf" to "marvin.conf",
 and edit it in your favorite text editor. You should probably at least give him
 a new nickname, and change the channels you want him to join.
 
+Once you've done that, he can be run with the command `python marvin`.
+
 If you're new to IRC, you should read 
 [this introduction](http://www.irchelp.org/irchelp/new2irc.html) before trying
 it out. I'd recommend installing XChat (or [Colloquy](http://colloquy.info) if
